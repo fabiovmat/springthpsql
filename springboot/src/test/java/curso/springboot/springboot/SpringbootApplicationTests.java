@@ -19,6 +19,7 @@ class SpringbootApplicationTests {
 		Pessoa pessoa = new Pessoa();
 		pessoa.setNome("Fabio");
 		pessoa.setSobrenome("Matt");
+		pessoa.setIdade(37);
 		
 		//teste
 		
