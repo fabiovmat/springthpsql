@@ -37,6 +37,9 @@ color: white;
 <div class="row">
 <p>ID:<span th:text= "${p.id}"></span></p>
 <p>Nome:<span th:text= "${p.nome}"></span></p>
+<p>Sobrenome: <span th:text="${p.sobrenome}"></span></p>
+<p>Idade:<span th:text= "${p.idade}"></span></p>
+
 
 
 
@@ -69,6 +72,28 @@ color: white;
 </form>
 
 </div>
+
+<table class="striped">
+
+
+		<tr th:each="fone :${[telefones]}">
+		
+			<td th:text="${fone.numero}"></td>
+			
+			<td th:text="${fone.tipo}"></td>
+			<td><a
+				th:href="@{/removertelefone/{idtelefone}(idtelefone=${fone.id})}">Excluir</a></td>
+			
+			
+			
+			</tr>
+
+</table>
+
+
+
+
+
 
 <!--JavaScript at end of body for optimized loading-->
 <script type="text/javascript" src="/materialize/js/materialize.min.js"></script>

@@ -3,25 +3,47 @@ package curso.springboot.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-
 @Entity
-public class Pessoa implements Serializable{
+public class Pessoa implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO) //gerador de chave primaria
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
+	private String nome;
+
+	private String sobrenome;
 	
+	private int idade;
+	
+	@OneToMany(mappedBy="pessoa", orphanRemoval= true, cascade = CascadeType.ALL)
+	private List<Telefone> telefones;
+	
+	public void setTelefones(List<Telefone> telefones) {
+		this.telefones = telefones;
+	}
+	
+	public List<Telefone> getTelefones() {
+		return telefones;
+	}
+	
+	public void setIdade(int idade) {
+		this.idade = idade;
+	}
+	
+	public int getIdade() {
+		return idade;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -45,35 +67,5 @@ public class Pessoa implements Serializable{
 	public void setSobrenome(String sobrenome) {
 		this.sobrenome = sobrenome;
 	}
-
-	private String nome;
-	
-	private String sobrenome;
-	
-	private int idade;
-	
-	@OneToMany(mappedBy = "pessoa")
-	private List<Telefone> telefones;
-	
-	public void setTelefones(List<Telefone> telefones) {
-		this.telefones = telefones;
-	}
-	
-	public List<Telefone> getTelefones() {
-		return telefones;
-	}
-
-	public int getIdade() {
-		return idade;
-	}
-
-	public void setIdade(int idade) {
-		this.idade = idade;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	
 
 }

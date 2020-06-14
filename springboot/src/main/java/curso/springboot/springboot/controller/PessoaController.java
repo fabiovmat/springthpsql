@@ -15,7 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import curso.springboot.model.Pessoa;
 import curso.springboot.model.Telefone;
 import curso.springboot.repository.PessoaRepository;
-import curso.springboot.repository.TelefoneRepositoy;
+import curso.springboot.repository.TelefoneRepository;
+
 
 @Controller
 public class PessoaController {
@@ -24,7 +25,7 @@ public class PessoaController {
 	private PessoaRepository pessoaRepository;
 	
 	@Autowired
-	private TelefoneRepositoy telefoneRepository;
+	private TelefoneRepository telefoneRepository;
 
 	
 
@@ -101,6 +102,9 @@ public class PessoaController {
 			
 			ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
 			modelAndView.addObject("pessoaobj", pessoa.get());
+			modelAndView.addObject("telefones", telefoneRepository.getTelefones(idpessoa));
+			
+			
 			return modelAndView;
 		}
 		
@@ -112,10 +116,27 @@ public class PessoaController {
 		telefoneRepository.save(telefone);	
 			
 		ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
+		
 		modelAndView.addObject("pessoaobj", pessoa);
+		modelAndView.addObject("telefones", telefoneRepository.getTelefones(pessoaid));
 		return modelAndView;
 			
 		}
+		
+		@GetMapping("/removertelefone/{idtelefone}")
+		public ModelAndView removertelefone (@PathVariable("idtelefone") Long idtelefone) {
+		
+			
+		Pessoa pessoa = telefoneRepository.findById(idtelefone).get().getPessoa();
+		telefoneRepository.deleteById(idtelefone);
+		ModelAndView modelAndView = new ModelAndView("cadastro/telefones");//volta para tela de cadastro
+		modelAndView.addObject("pessoaobj", pessoa);//retorna//objeto é removido da tela
+		modelAndView.addObject("telefones", telefoneRepository.getTelefones(pessoa.getId()));
+		return modelAndView;
+}
+
+		
+		
 		
 		}
 
