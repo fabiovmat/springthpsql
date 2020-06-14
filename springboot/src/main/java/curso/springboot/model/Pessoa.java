@@ -22,7 +22,7 @@ public class Pessoa implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@NotEmpty(message = "Nome não pode ser nulo")
+	@NotEmpty(message = "Nome não pode ser nulo") ///nao fazer isso! apenas didatico
 	@NotNull(message = "Nome não pode ser vazio")
 	private String nome;
 	

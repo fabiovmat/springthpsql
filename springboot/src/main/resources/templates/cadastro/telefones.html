@@ -31,6 +31,9 @@ color: white;
 <h3>Spring Boot + Thymeleaf + Material Design Lite</h3>
 <h5>Cadastro de Telefones</h5>
 
+
+
+
 <a class="waves-effect waves-light btn" href="/cadastropessoa">Voltar</a>
 
 <div th:each= "p: ${pessoaobj}">
@@ -49,8 +52,16 @@ color: white;
 </div>
 
 <h5>Telefones</h5>
+
+<div th:each = "m : ${msg}">
+
+<span th:text = "${m}"></span>
+</div>
+
+
+
 <div class="row">
-<form th:action="@{/addFonePessoa/{pessoaid}(pessoaid=${pessoaobj.id})}" method="post" class="col s12">
+<form th:action="@{/addFonePessoa/{pessoaid}(pessoaid=${pessoaobj.id})}" method="post" class="col s12" onsubmit="return validarCampos()? true: false">
 <div class="row">
 <div class="input-field col s6">
 <label class="active" for="numero">Numero: </label>
@@ -97,6 +108,23 @@ color: white;
 
 <!--JavaScript at end of body for optimized loading-->
 <script type="text/javascript" src="/materialize/js/materialize.min.js"></script>
+<script type="text/javascript">
+function validarCampos(){
+	numero = document.getElementById('numero').value;
+	tipo = document.getElementById('tipo').value;
+	if(numero === ''){
+		alert('Numero deve ser informado');
+		return false;
+	}else if (tipo === ''){
+		alert('Tipo deve ser informado');
+		return false
+		
+		
+	}
+	
+	return true;
+}
+</script>
 
 </body>
 </html>
