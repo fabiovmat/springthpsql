@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!--Import materialize.css-->
+<link type="text/css" rel="stylesheet"	href="/materialize/css/materialize.min.css" media="screen,projection" />
+<!--Let browser know website is optimized for mobile-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+
+<style>
+
+
+table.striped>tbody>tr:nth-child(odd){background-color:rgba(203,203,203,0.5);
+}
+
+form input[type=submit]{
+
+color: white;
+}
+
+</style>
+
+
+<title>Cadastro Pessoa</title>
+</head>
+
+<h3>Spring Boot + Thymeleaf + Material Design Lite</h3>
+<h5>Cadastro de Telefones</h5>
+
+<a class="waves-effect waves-light btn" href="/cadastropessoa">Voltar</a>
+
+<div th:each= "p: ${pessoaobj}">
+<div class="row">
+<p>ID:<span th:text= "${p.id}"></span></p>
+<p>Nome:<span th:text= "${p.nome}"></span></p>
+
+
+
+</div>
+
+
+</div>
+
+<h5>Telefones</h5>
+<div class="row">
+<form th:action="@{/addFonePessoa/{pessoaid}(pessoaid=${pessoaobj.id})}" method="post" class="col s12">
+<div class="row">
+<div class="input-field col s6">
+<label class="active" for="numero">Numero: </label>
+<input id="numero" name="numero" class="validate">
+</div>
+</div>
+
+<div class="input-field col s6">
+<label class="active" for="tipo">Tipo: </label>
+<input id="tipo" name="tipo" class="validate">
+
+</div>
+
+<div>
+
+<input type="submit" value="Adicionar" class="waves-effect waves-light btn">
+
+</div>
+</form>
+
+</div>
+
+<!--JavaScript at end of body for optimized loading-->
+<script type="text/javascript" src="/materialize/js/materialize.min.js"></script>
+
+</body>
+</html>

@@ -112,7 +112,7 @@ color: white;
 			<!--aqui sao criadas as linhas para objeto pessoa atraves de uma lista  -->
 
 			<td th:text="${pessoa.id}"></td>
-			<td th:text="${pessoa.nome}"></td>
+			<td><a th:href="@{/telefones/{idpessoa}(idpessoa=${pessoa.id})}"><span th:text="${pessoa.nome}"></span></a></td>
 			<td th:text="${pessoa.sobrenome}"></td>
 			<td th:text="${pessoa.idade}"></td>
 			<td><a
