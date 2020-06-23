@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 
 <!--Import Google Icon Font-->
@@ -63,10 +64,10 @@ color: white;
 			
 </div>
 
-			<div class="row">
+			<div class="row" sec:authorize="hasRole('ROLE_TECNICO')" >
 				<div class="input-field col s12">
 
-					<label class="active">Idade</label> <input name="idade"
+					<label class="active" >Idade</label> <input name="idade"
 						th:field="*{idade}" id="idade" class="validate">
 				</div>
 			</div>
