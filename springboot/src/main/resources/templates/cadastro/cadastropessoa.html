@@ -56,15 +56,27 @@ form input[type=submit] {
 						hidden="true" class="validate"> <label class="active">Nome</label>
 					<input placeholder="Digite o primeiro nome"       name="nome" th:field="*{nome}" id="nome">
 				</div>
+</div>
 
-
+<div class="row">
 
 				<div class="input-field col s6">
 					<label class="active">Sobrenome</label> <input placeholder="Digite o sobrenome" name="sobrenome"
 						th:field="*{sobrenome}" id="sobrenome" class="validate">
 				</div>
 
+			
+			
+			<div class="input-field col s6">
+			<label for="sexopessoa" class="active">Sexo</label>
+			<select class="browser-default" th:field="*{sexopessoa}">
+			<option value="" disabled selected>--[Selecione]--</option>
+				<option value="MASCULINO" th:text="Masculino"/>
+				<option value="FEMININO" th:text="Feminino"/>
+			</select>
 			</div>
+			</div>
+			
 
 			<div class="row" sec:authorize="hasRole('ROLE_TECNICO')">
 				<div class="input-field col s12">
@@ -161,6 +173,17 @@ form input[type=submit] {
 				<th>Nome</th>
 				<th>Sobrenome</th>
 				<th>Idade</th>
+				<th>Sexo</th>
+				
+				
+				<th>CEP</th>
+				<th>Endereço</th>
+				<th>Bairro</th>
+				<th>Cidade</th>
+				<th>Estado</th>
+				
+				
+				
 			</tr>
 		</thead>
 
@@ -173,6 +196,18 @@ form input[type=submit] {
 					th:text="${pessoa.nome}"></span></a></td>
 			<td th:text="${pessoa.sobrenome}"></td>
 			<td th:text="${pessoa.idade}"></td>
+			<td th:text="${pessoa.sexopessoa}"></td>
+			
+			<td th:text="${pessoa.cep}"></td>
+			<td th:text="${pessoa.rua}"></td>
+			<td th:text="${pessoa.bairro}"></td>
+			<td th:text="${pessoa.cidade}"></td>
+			<td th:text="${pessoa.uf}"></td>
+			
+			
+			
+			
+			
 			<td><a
 				th:href="@{/editarpessoa/{idpessoa}(idpessoa=${pessoa.id})}">Editar</a></td>
 			<td><a
