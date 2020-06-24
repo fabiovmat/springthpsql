@@ -50,6 +50,9 @@ public class PessoaController {
 	@RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa")//** antes ignora, intercepta somente a url salvarpessoa
 	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult) {
 		
+		pessoa.setTelefones(telefoneRepository.getTelefones(pessoa.getId()));
+		
+		
 		if (bindingResult.hasErrors()) { // se tiver erro retorna para tela de cadastro
 			ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 			Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
