@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import curso.springboot.model.Pessoa;
 import curso.springboot.model.Telefone;
 import curso.springboot.repository.PessoaRepository;
+import curso.springboot.repository.ProfisssaoRepository;
 import curso.springboot.repository.TelefoneRepository;
 
 @Controller
@@ -37,6 +38,9 @@ public class PessoaController {
 
 	@Autowired
 	private ReportUtil reportUtil;
+	
+	@Autowired
+	private ProfisssaoRepository profissaoRepository;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/cadastropessoa")
 	public ModelAndView inicio() {
@@ -44,6 +48,7 @@ public class PessoaController {
 		modelAndView.addObject("pessoaobj", new Pessoa()); // passa um objeto vazio de inicio
 		Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
 		modelAndView.addObject("pessoas", pessoasIt);
+		modelAndView.addObject("profissoes", profissaoRepository.findAll());
 
 		return modelAndView;
 	}
@@ -58,7 +63,8 @@ public class PessoaController {
 			ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 			Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
 			modelAndView.addObject("pessoas", pessoasIt);
-			modelAndView.addObject("pessoaobj", pessoa);
+			modelAndView.addObject("pessoaobj",pessoa);
+			
 
 			List<String> msg = new ArrayList<String>();
 			for (ObjectError objectError : bindingResult.getAllErrors()) {
@@ -66,6 +72,7 @@ public class PessoaController {
 			}
 
 			modelAndView.addObject("msg", msg);
+			modelAndView.addObject("profissoes", profissaoRepository.findAll());
 			return modelAndView;
 
 		}
@@ -87,6 +94,7 @@ public class PessoaController {
 		Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
 		andView.addObject("pessoas", pessoasIt);
 		andView.addObject("pessoaobj", new Pessoa());
+		
 		return andView;
 
 	}
@@ -98,6 +106,7 @@ public class PessoaController {
 
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 		modelAndView.addObject("pessoaobj", pessoa.get());
+		modelAndView.addObject("profissoes",profissaoRepository.findAll() );//busca as profissoes no repository
 		return modelAndView;
 	}
 

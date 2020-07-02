@@ -81,11 +81,23 @@ form input[type=submit] {
 			
 
 			<div class="row" sec:authorize="hasRole('ROLE_TECNICO')">
-				<div class="input-field col s12">
+				<div class="input-field col s6">
 
 					<label class="active">Idade</label> <input placeholder="Idade" name="idade"
 						th:field="*{idade}" id="idade" class="validate">
 				</div>
+				
+				
+				<div class="input-field col s6">
+			<label for="profissao" class="active">Profissão</label>
+			<select class="browser-default" th:field="*{profissao}" id="profissao">
+			<option th:each = "p: ${profissoes}" th:value="${p.id}" th:text="${p.nome}">
+				
+			</select>
+			</div>
+				
+				
+				
 			</div>
 
 <div class="row">
