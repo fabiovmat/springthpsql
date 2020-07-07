@@ -8,6 +8,12 @@
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
 
+
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+
+
 <!--Import Google Icon Font-->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
@@ -91,7 +97,7 @@ form input[type=submit] {
 				<div class="input-field col s6">
 			<label for="profissao" class="active">Profissão</label>
 			<select class="browser-default" th:field="*{profissao}" id="profissao">
-			<option th:each = "p: ${profissoes}" th:value="${p.id}" th:text="${p.nome}">
+			<option th:each = "p: ${profissoes}" th:value="${p.id}" th:text="${p.nome}"/>
 				
 			</select>
 			</div>
@@ -99,6 +105,36 @@ form input[type=submit] {
 				
 				
 			</div>
+			
+			
+			<div class="row">
+				<div class="input-field col s6">
+				<label for="cargo" class="active">Cargo</label>
+					<select class="browser-default" th:field="*{cargo}" id="cargo">
+			<option th:each = "c: ${T(curso.springboot.model.Cargo).values()}" th:value="${c}" th:text="${c.nome}"/>
+					</select>
+				</div>
+				
+				
+				<div class="input-field col s6">
+				<label for="dataNascimento" class="active">Data Nascimento</label>
+				<input type="date" id="dataNascimento" th:field="*{dataNascimento}" name="datanascimento" placeholder="Data Nasc.">
+			
+			
+			
+			</div>
+				
+				
+				
+				
+				
+</div>
+			
+			
+			
+			
+			
+			
 
 <div class="row">
 				<div class="input-field col s12">
@@ -254,8 +290,23 @@ form input[type=submit] {
 
    <!-- Adicionando Javascript -->
     <script type="text/javascript" >
+    
+    
+    
+    
 
         $(document).ready(function() {
+        	
+        	$('dataNascimento').datepicker({
+        		
+        		showOthermonths:true,
+        		format:'yyyy-mm-dd'
+        		 
+        	});
+        	
+        	
+        	
+        	
 
             function limpa_formulário_cep() {
                 // Limpa valores do formulário de cep.
