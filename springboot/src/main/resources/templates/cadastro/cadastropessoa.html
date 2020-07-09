@@ -56,7 +56,7 @@ form input[type=submit] {
 <legend>Cadastro de pessoas</legend>
 	<div class="row">
 		<form action="salvarpessoa" id="formpessoa" method="post"
-			th:object="${pessoaobj}" class="col s12">
+			th:object="${pessoaobj}" class="col s12" enctype="multipart/form-data">
 
 			<div class="row">
 				<div class="input-field col s6">
@@ -119,7 +119,7 @@ form input[type=submit] {
 				<div class="input-field col s6">
 				<label for="dataNascimento" class="active">Data Nascimento</label>
 				<input type="date" id="dataNascimento" th:field="*{dataNascimento}" name="datanascimento" placeholder="Data Nasc.">
-			
+				
 			
 			
 			</div>
@@ -131,9 +131,13 @@ form input[type=submit] {
 </div>
 			
 			
+		<div class="row">
+				<div class="input-field col s12">	
+				<label for="file" class="active">Curriculo: </label>
+				<input type="file" id="file" name="file" class="file-field input-field">
 			
 			
-			
+			</div></div>
 			
 
 <div class="row">
@@ -243,13 +247,12 @@ form input[type=submit] {
 				<th>Sobrenome</th>
 				<th>Idade</th>
 				<th>Sexo</th>
-				
-				
-				<th>CEP</th>
-				<th>Endereço</th>
-				<th>Bairro</th>
 				<th>Cidade</th>
 				<th>Estado</th>
+				<th>Curriculo</th>
+				<th>Editar</th>
+				<th>Excluir</th>
+				
 				
 				
 				
@@ -267,12 +270,14 @@ form input[type=submit] {
 			<td th:text="${pessoa.idade}"></td>
 			<td th:text="${pessoa.sexopessoa}"></td>
 			
-			<td th:text="${pessoa.cep}"></td>
-			<td th:text="${pessoa.rua}"></td>
-			<td th:text="${pessoa.bairro}"></td>
+		
 			<td th:text="${pessoa.cidade}"></td>
 			<td th:text="${pessoa.uf}"></td>
 			
+			<td><a th:if="${pessoa.curriculo != null}"
+				th:href="@{/baixarcurriculo/{idpessoa}(idpessoa=${pessoa.id})}">Download</a>
+				<a th:if="${pessoa.curriculo == null}" >Não cadastrado</a>
+				</td>
 			
 			
 			

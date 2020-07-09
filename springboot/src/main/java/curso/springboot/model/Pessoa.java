@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -51,6 +52,33 @@ public class Pessoa implements Serializable {
 	
 	private String sexopessoa;
 	
+	@Lob
+	private byte[] curriculo;
+	
+	
+	private String nomeFileCurriculo;
+	
+	private String tipoFileCurriculo;
+	
+	
+	
+	
+	public String getNomeFileCurriculo() {
+		return nomeFileCurriculo;
+	}
+
+	public void setNomeFileCurriculo(String nomeFileCurriculo) {
+		this.nomeFileCurriculo = nomeFileCurriculo;
+	}
+
+	public String getTipoFileCurriculo() {
+		return tipoFileCurriculo;
+	}
+
+	public void setTipoFileCurriculo(String tipoFileCurriculo) {
+		this.tipoFileCurriculo = tipoFileCurriculo;
+	}
+
 	@ManyToOne
 	private Profissao profissao;
 	
@@ -183,4 +211,15 @@ public class Pessoa implements Serializable {
 		this.sobrenome = sobrenome;
 	}
 
+	public byte[] getCurriculo() {
+		return curriculo;
+	}
+
+	public void setCurriculo(byte[] curriculo) {
+		this.curriculo = curriculo;
+	}
+
+	
+	
+	
 }
