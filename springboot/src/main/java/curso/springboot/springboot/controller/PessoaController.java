@@ -1,17 +1,20 @@
 package curso.springboot.springboot.controller;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -41,7 +44,7 @@ public class PessoaController {
 
 	@Autowired
 	private ReportUtil reportUtil;
-	
+
 	@Autowired
 	private ProfisssaoRepository profissaoRepository;
 
@@ -49,26 +52,35 @@ public class PessoaController {
 	public ModelAndView inicio() {
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 		modelAndView.addObject("pessoaobj", new Pessoa()); // passa um objeto vazio de inicio
-		Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
-		modelAndView.addObject("pessoas", pessoasIt);
+		modelAndView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5, Sort.by("nome"))));
 		modelAndView.addObject("profissoes", profissaoRepository.findAll());
-		
 
 		return modelAndView;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa", consumes = {"multipart/form-data"}) // ** antes ignora, intercepta somente a url
-																			// salvarpessoa
-	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult, final MultipartFile file) throws IOException {
+	@GetMapping("/pessoaspag")
+	/* parametros da paginacao */
+	public ModelAndView carregaPessoaPorPaginacao(@PageableDefault(size = 5) Pageable pageable, ModelAndView model) {
+
+		Page<Pessoa> pagePessoa = pessoaRepository.findAll(pageable);
+		model.addObject("pessoas", pagePessoa);
+		model.addObject("pessoaobj", new Pessoa());
+		model.setViewName("cadastro/cadastropessoa");
+
+		return model;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa", consumes = {
+			"multipart/form-data" }) /** antes ignora, intercepta somente a url salvarpessoa */
+	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult, final MultipartFile file)
+			throws IOException {
 
 		pessoa.setTelefones(telefoneRepository.getTelefones(pessoa.getId()));
 
 		if (bindingResult.hasErrors()) { // se tiver erro retorna para tela de cadastro
 			ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
-			Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
-			modelAndView.addObject("pessoas", pessoasIt);
-			modelAndView.addObject("pessoaobj",pessoa);
-			
+			modelAndView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5, Sort.by("nome"))));
+			modelAndView.addObject("pessoaobj", pessoa);
 
 			List<String> msg = new ArrayList<String>();
 			for (ObjectError objectError : bindingResult.getAllErrors()) {
@@ -80,27 +92,27 @@ public class PessoaController {
 			return modelAndView;
 
 		}
-		
+
 		if (file.getSize() > 0) {
 			pessoa.setCurriculo(file.getBytes());
 			pessoa.setTipoFileCurriculo(file.getContentType());
 			pessoa.setNomeFileCurriculo(file.getOriginalFilename());
-			
-		}else {
-			if (pessoa.getId() != null && pessoa.getId() > 0) {//editando
-				Pessoa pessoaTemp = pessoaRepository.findById(pessoa.getId()).get();//verifica o banco se ja existe cadastrado e seta o objeto caso ja exista
+
+		} else {
+			if (pessoa.getId() != null && pessoa.getId() > 0) {// editando
+				Pessoa pessoaTemp = pessoaRepository.findById(pessoa.getId()).get();// verifica o banco se ja existe
+																					// cadastrado e seta o objeto caso
+																					// ja exista
 				pessoa.setCurriculo(pessoaTemp.getCurriculo());
 				pessoa.setTipoFileCurriculo(pessoaTemp.getTipoFileCurriculo());
 				pessoa.setNomeFileCurriculo(pessoaTemp.getNomeFileCurriculo());
 			}
 		}
-		
 
 		pessoaRepository.save(pessoa);
 
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-		Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
-		andView.addObject("pessoas", pessoasIt);
+		andView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5, Sort.by("nome"))));
 		andView.addObject("pessoaobj", new Pessoa());
 
 		return andView;
@@ -110,10 +122,9 @@ public class PessoaController {
 	@RequestMapping(method = RequestMethod.GET, value = "/listapessoas")
 	public ModelAndView pessoas() {
 		ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-		Iterable<Pessoa> pessoasIt = pessoaRepository.findAll();
-		andView.addObject("pessoas", pessoasIt);
+		andView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5, Sort.by("nome"))));
 		andView.addObject("pessoaobj", new Pessoa());
-		
+
 		return andView;
 
 	}
@@ -125,7 +136,7 @@ public class PessoaController {
 
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 		modelAndView.addObject("pessoaobj", pessoa.get());
-		modelAndView.addObject("profissoes",profissaoRepository.findAll() );//busca as profissoes no repository
+		modelAndView.addObject("profissoes", profissaoRepository.findAll());// busca as profissoes no repository
 		return modelAndView;
 	}
 
@@ -134,103 +145,108 @@ public class PessoaController {
 
 		pessoaRepository.deleteById(idpessoa);
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");// volta para tela de cadastro
-		modelAndView.addObject("pessoas", pessoaRepository.findAll()); // objeto é removido da tela
+		modelAndView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5, Sort.by("nome")))); // objeto é
+																											// removido
+																											// da tela
 		modelAndView.addObject("pessoaobj", new Pessoa());// retorna objeto vazio para exibir na tela
 		return modelAndView;
 	}
-	
-	
-	/*Consulta objeto pessoa no banco de dados*/
-	@GetMapping("**/baixarcurriculo/{idpessoa}")
-	public void baixarCurriculo(@PathVariable("idpessoa")Long idpessoa, HttpServletResponse response) throws IOException {
-		
-		Pessoa pessoa = pessoaRepository.findById(idpessoa).get();
-		if (pessoa.getCurriculo() != null) {
-			
-			/*setar o tamanho da resposta*/
-			response.setContentLength(pessoa.getCurriculo().length);
-			
-			/*tipo do arquivo para download ou pode ser generica application/octet-stream*/
-			response.setContentType(pessoa.getTipoFileCurriculo());
-			
-			
-			/*define o cabecalho da resposta*/
-			String headerKey = "Content-Disposition";
-			String headerValue = String.format("attachment; filename=\"%s\"", pessoa.getNomeFileCurriculo());
-			response.setHeader(headerKey, headerValue);
-			
-			
-			/*Finaliza a resposta passando o arquivo*/
-			response.getOutputStream().write(pessoa.getCurriculo());
-			
-		}
-		
-	}
-	
-
-	// botao PDF
-	@GetMapping("**/pesquisarpessoa")
-	public void imprimePdf(@RequestParam("nomepesquisa") String nomepesquisa,
-			@RequestParam("pesquisasexo") String pesquisasexo, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-
-		List<Pessoa> pessoas = new ArrayList<Pessoa>();
-		if (pesquisasexo != null && !pesquisasexo.isEmpty() 
-				&& nomepesquisa != null && !nomepesquisa.isEmpty()) {
-			pessoas = pessoaRepository.findPessoaByNameSexo(nomepesquisa, pesquisasexo);/*Busca por nome e sexo*/
-		}else if (nomepesquisa != null && nomepesquisa.isEmpty()) { 
-			pessoas = pessoaRepository.findPessoaByName(nomepesquisa); /*Busca por nome*/
-		}
-			else if (pesquisasexo != null && !pesquisasexo.isEmpty()) {/*Busca somente por sexo*/
-				
-				pessoas = pessoaRepository.findPessoaBySexo(pesquisasexo);/*Busca somente por sexo*/
-			
-		}else {/*Busca todos*/
-			Iterable<Pessoa> iterator  = pessoaRepository.findAll();
-			for ( Pessoa pessoa : iterator) {
-				pessoas.add(pessoa);
-			}
-		}
-	
-		/*Chame o serviço que faz a geração do relatorio*/
-		byte[] pdf = reportUtil.gerarRelatorio(pessoas, "pessoa", request.getServletContext());
-		
-	    /*Tamanho da resposta*/
-		response.setContentLength(pdf.length);
-		
-		/*Definir na resposta o tipo de arquivo*/
-		response.setContentType("application/octet-stream");
-		
-		/*Definir o cabeçalho da resposta*/
-		String headerKey = "Content-Disposition";
-		String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
-		response.setHeader(headerKey, headerValue);
-		
-		/*Finaliza a resposta pro navegador*/
-		response.getOutputStream().write(pdf);
-		
-	}
-	
 
 	@PostMapping("**/pesquisarpessoa")
 	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa,
-			@RequestParam("pesquisasexo") String pesquisasexo
+			@RequestParam("pesqsexo") String pesqsexo,
+			@PageableDefault(size = 5, sort = {"nome"}) Pageable pageable) {
 
-	) {
+		Page<Pessoa> pessoas = null;
 
-		List<Pessoa> pessoas = new ArrayList<Pessoa>();
-
-		if (pesquisasexo != null && !pesquisasexo.isEmpty()) {
-			pessoas = pessoaRepository.findPessoaByNameSexo(nomepesquisa, pesquisasexo);
+		if (pesqsexo != null && !pesqsexo.isEmpty()) {
+			pessoas = pessoaRepository.findPessoaByNameSexoPage(nomepesquisa, pesqsexo, pageable);
 		} else {
-			pessoas = pessoaRepository.findPessoaByName(nomepesquisa);
 
+			pessoas = pessoaRepository.findPessoaByNamePage(nomepesquisa, pageable);
 		}
 
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 		modelAndView.addObject("pessoas", pessoas);
 		modelAndView.addObject("pessoaobj", new Pessoa());
+		modelAndView.addObject("nomepesquisa", nomepesquisa);
+
 		return modelAndView;
+	}
+
+	/* Consulta objeto pessoa no banco de dados */
+	@GetMapping("**/baixarcurriculo/{idpessoa}")
+	public void baixarCurriculo(@PathVariable("idpessoa") Long idpessoa, HttpServletResponse response)
+			throws IOException {
+
+		Pessoa pessoa = pessoaRepository.findById(idpessoa).get();
+		if (pessoa.getCurriculo() != null) {
+
+			/* setar o tamanho da resposta */
+			response.setContentLength(pessoa.getCurriculo().length);
+
+			/*
+			 * tipo do arquivo para download ou pode ser generica application/octet-stream
+			 */
+			response.setContentType(pessoa.getTipoFileCurriculo());
+
+			/* define o cabecalho da resposta */
+			String headerKey = "Content-Disposition";
+			String headerValue = String.format("attachment; filename=\"%s\"", pessoa.getNomeFileCurriculo());
+			response.setHeader(headerKey, headerValue);
+
+			/* Finaliza a resposta passando o arquivo */
+			response.getOutputStream().write(pessoa.getCurriculo());
+
+		}
+
+	}
+
+	// botao PDF
+	@GetMapping("**/pesquisarpessoa")
+	public void imprimePdf(@RequestParam("nomepesquisa") String nomepesquisa, @RequestParam("pesqsexo") String pesqsexo,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+
+		if (pesqsexo != null && !pesqsexo.isEmpty() && nomepesquisa != null
+				&& !nomepesquisa.isEmpty()) {/* Busca por nome e sexo */
+
+			pessoas = pessoaRepository.findPessoaByNameSexo(nomepesquisa, pesqsexo);
+
+		} else if (nomepesquisa != null && !nomepesquisa.isEmpty()) {/* Busca somente por nome */
+
+			pessoas = pessoaRepository.findPessoaByName(nomepesquisa);
+
+		} else if (pesqsexo != null && !pesqsexo.isEmpty()) {/* Busca somente por sexo */
+
+			pessoas = pessoaRepository.findPessoaBySexo(pesqsexo);
+
+		} else {/* Busca todos */
+
+			Iterable<Pessoa> iterator = pessoaRepository.findAll();
+			for (Pessoa pessoa : iterator) {
+				pessoas.add(pessoa);
+			}
+		}
+
+		/* Chame o serviço que faz a geração do relatorio */
+		byte[] pdf = reportUtil.gerarRelatorio(pessoas, "pessoa", request.getServletContext());
+
+		/* Tamanho da resposta */
+		response.setContentLength(pdf.length);
+
+		/* Definir na resposta o tipo de arquivo */
+		response.setContentType("application/octet-stream");
+
+		/* Definir o cabeçalho da resposta */
+		String headerKey = "Content-Disposition";
+		String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
+		response.setHeader(headerKey, headerValue);
+
+		/* Finaliza a resposta pro navegador */
+		response.getOutputStream().write(pdf);
+
 	}
 
 	/* tela de telefones */
